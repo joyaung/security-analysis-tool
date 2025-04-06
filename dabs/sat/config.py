@@ -17,10 +17,13 @@ from sat.utils import (
 
 
 def form():
-    profile = list_input(
-        message="Select profile",
-        choices=loading(get_profiles, "Loading profiles..."),
-    )
+    if os.getenv("SAT_PROFILE_NAME"):
+        profile = os.getenv("SAT_PROFILE_NAME")
+    else:
+        profile = list_input(
+            message="Select profile",
+            choices=loading(get_profiles, "Loading profiles..."),
+        )
     client = WorkspaceClient(profile=profile)
     questions = [
         Text(
@@ -29,6 +32,8 @@ def form():
             validate=lambda _, x: re.match(
                 r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", x
             ),
+            ignore=lambda _: os.getenv("SAT_DATABRICKS_ACCOUNT_ID"),
+            default=lambda _: os.getenv("SAT_DATABRICKS_ACCOUNT_ID") or "",
         ),
         Confirm(
             name="enable_uc",
@@ -123,12 +128,15 @@ def cloud_specific_questions(client: WorkspaceClient):
         Text(
             name="aws-client-id",
             message="Client ID",
-            ignore=cloud_validation(client, "aws"),
+            ignore=lambda _: cloud_validation(client, "aws")
+            or os.getenv("SAT_SP_CLIENT"),
+            default=lambda _: os.getenv("SAT_SP_CLIENT") or "",
         ),
         Password(
             name="aws-client-secret",
             message="Client Secret",
-            ignore=cloud_validation(client, "aws"),
+            ignore=cloud_validation(client, "aws") or os.getenv("SAT_SP_SECRET"),
+            default=lambda _: os.getenv("SAT_SP_SECRET") or "",
             echo="",
         ),
     ]
