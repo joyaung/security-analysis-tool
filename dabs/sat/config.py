@@ -17,14 +17,14 @@ from sat.utils import (
 
 
 def form():
-    if os.getenv("SAT_PROFILE_NAME"):
-        profile = os.getenv("SAT_PROFILE_NAME")
-    else:
-        profile = list_input(
-            message="Select profile",
-            choices=loading(get_profiles, "Loading profiles..."),
-        )
-    client = WorkspaceClient(profile=profile)
+    # if os.getenv("SAT_PROFILE_NAME"):
+    #     profile = os.getenv("SAT_PROFILE_NAME")
+    # else:
+    #     profile = list_input(
+    #         message="Select profile",
+    #         choices=loading(get_profiles, "Loading profiles..."),
+    #     )
+    client = WorkspaceClient()
     questions = [
         Text(
             name="account_id",
