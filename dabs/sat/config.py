@@ -17,13 +17,6 @@ from sat.utils import (
 
 
 def form():
-    # if os.getenv("SAT_PROFILE_NAME"):
-    #     profile = os.getenv("SAT_PROFILE_NAME")
-    # else:
-    #     profile = list_input(
-    #         message="Select profile",
-    #         choices=loading(get_profiles, "Loading profiles..."),
-    #     )
     client = WorkspaceClient()
     questions = [
         Text(
@@ -84,7 +77,7 @@ def form():
         ),
     ]
     questions = questions + cloud_specific_questions(client) + proxies
-    return client, prompt(questions), profile
+    return client, prompt(questions)
 
 
 def cloud_specific_questions(client: WorkspaceClient):

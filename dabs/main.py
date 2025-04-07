@@ -7,7 +7,7 @@ from sat.config import form, generate_secrets
 from sat.utils import cloud_type
 
 
-def install(client: WorkspaceClient, answers: dict, profile: str):
+def install(client: WorkspaceClient, answers: dict):
     cloud = cloud_type(client)
     generate_secrets(client, answers, cloud)
     config = {
@@ -33,15 +33,15 @@ def install(client: WorkspaceClient, answers: dict, profile: str):
         json.dump(config, fp)
 
     os.system("clear")
-    subprocess.call(f"sh ./setup.sh tmp {profile} {config_file}".split(" "))
+    subprocess.call(f"sh ./setup.sh tmp {config_file}".split(" "))
     print("Installation complete.")
     print(f"Review workspace -> {client.config.host}")
 
 
 def setup():
     try:
-        client, answers, profile = form()
-        install(client, answers, profile)
+        client, answers = form()
+        install(client, answers)
     except KeyboardInterrupt:
         print("Installation aborted.")
     except Exception as e:
